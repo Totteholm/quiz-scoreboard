@@ -1,67 +1,63 @@
-
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <title>Bröllopsquiz – Topplista</title>
-    <style>
-        body {
-            background-color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
-            padding: 2rem;
-        }
-        h1 {
-            font-size: 3em;
-            margin-bottom: 0.5em;
-        }
-        .entry {
-            font-size: 2em;
-            margin: 0.3em 0;
-            color: #000;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Bröllopsquiz Topplista</title>
+  <style>
+    body {
+      background: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 40px;
+    }
+    h1 {
+      font-size: 2.5em;
+    }
+    .entry {
+      font-size: 1.5em;
+      margin: 6px 0;
+    }
+  </style>
 </head>
 <body>
-    <h1>🏅 Bröllopsquiz Topplista</h1>
-    <div id="leaderboard"></div>
+  <h1>🏅 <strong>Bröllopsquiz Topplista</strong></h1>
+  <div id="leaderboard"></div>
 
-    <script>
-        const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSIjH4EOuZqdbEx_Hscj4xfaIGtJQXvcOuWgOUcxV_0X6cKPQ8krgn6Pnd2L5lXRvLt43h0GUOzs4uz/pubhtml?gid=630528801&single=true';
+  <script>
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIjH4EOuZqdbEx_Hscj4xfaIGtJQXvcOuWgOUcxV_0X6cKPQ8krgn6Pnd2L5lXRvLt43h0GUOzs4uz/pub?output=csv?gid=630528801&single=true";
 
-        async function loadScores() {
-            const response = await fetch(sheetUrl);
-            const text = await response.text();
-            const rows = text.trim().split("\n").slice(1); // hoppa över rubriker
-            const data = rows.map(row => {
-                const [name, score] = row.split(",");
-                return { name: name.trim(), score: parseInt(score) || 0 };
-            });
-            const sorted = data.sort((a, b) => b.score - a.score).slice(0, 10);
+    async function loadScores() {
+      const response = await fetch(sheetUrl);
+      const text = await response.text();
+      const rows = text.trim().split("\n").slice(1);
+      const data = rows.map(row => {
+        const [name, score] = row.split(",");
+        return { name: name.trim(), score: parseInt(score) || 0 };
+      });
 
-            const container = document.getElementById("leaderboard");
-            container.innerHTML = "";
+      const sorted = data.sort((a, b) => b.score - a.score).slice(0, 10);
+      const container = document.getElementById("leaderboard");
+      container.innerHTML = "";
 
-            sorted.forEach((entry, i) => {
-                let emoji = "🎖️";
-                if (i === 0) emoji = "🥇";
-                else if (i === 1) emoji = "🥈";
-                else if (i === 2) emoji = "🥉";
+      sorted.forEach((entry, i) => {
+        let emoji = "🎖️";
+        if (i === 0) emoji = "🥇";
+        else if (i === 1) emoji = "🥈";
+        else if (i === 2) emoji = "🥉";
 
-                const div = document.createElement("div");
-                div.className = "entry";
-                div.textContent = `${emoji} ${entry.name} (${entry.score} poäng)`;
-                container.appendChild(div);
-            });
-        }
+        const div = document.createElement("div");
+        div.className = "entry";
+        div.textContent = `${emoji} ${entry.name} (${entry.score} poäng)`;
+        container.appendChild(div);
+      });
+    }
 
-        loadScores();
-        setInterval(loadScores, 15000); // uppdatera var 15:e sekund
-    </script>
+    loadScores();
+    setInterval(loadScores, 15000);  // Uppdatera var 15:e sekund
+  </script>
 </body>
 </html>
